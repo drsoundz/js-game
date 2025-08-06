@@ -1,64 +1,57 @@
- let humanScore = 0;
- let computerScore = 0;
-// create function to get computer choice (getComputerChoice)
+// initialize all your values
+let humanScore = 0;
+let computerScore = 0;
+let humanChoice = "";
+let computerChoice = "";
+
+// select all the necessary elements
+const btn1 = document.querySelector("#btn1");
+const btn2 = document.querySelector("#btn2");
+const btn3 = document.querySelector("#btn3");
+const resultDiv = document.querySelector("#result");
+const scoreDiv = document.querySelector("#score");
+
 function getComputerChoice() {
     const choices = ["Rock", "Paper", "Scissors"];
     const randomIndex = Math.floor(Math.random() * choices.length);
-    return choices[randomIndex];
+    computerChoice = choices[randomIndex];
+    resultDiv.textContent = `Computer has chosen`;
 }
 
-// create function to get human choice (getHumanChoice)
-function getHumanChoice() {
+function getHumanChoice(){
     const userInput = prompt("Enter your choice: Rock, Paper or Scissors").trim().toLowerCase();
     if (["rock", "paper", "scissors"].includes(userInput)){
-        return userInput.charAt(0).toUpperCase() + userInput.slice(1);
+        humanChoice = userInput.charAt(0).toUpperCase() + userInput.slice(1);
+        resultDiv.textContent = `You chose: ${humanChoice}`;
     } else {
-        alert("Invalid input. Please enter Rock,Paper, or Scissors.");
-        return getHumanChoice();
+        alert("Invalid input. Please enter Rock, Paper, or Scissors.");
+        getHumanChoice();
     }
 }
 
-let humanChoice = getHumanChoice();
-let computerChoice = getComputerChoice();
-
-// create function for game round(playRound) that takes the human and computer choices as arguments(humanChoice, computerChoice)
-function playRound(humanChoice, computerChoice) {
-    if (humanChoice === computerChoice) {
-        return "It's a tie!";
+function playRound() {
+    if (!humanChoice || !computerChoice) {
+        resultDiv.textContent = "Please select both choices first!";
+        return;
     }
-// output the outcome of playRound e.g You Lose, Paper beats Rock.
-// increment human or computer score based on round winner
-    if ((humanChoice === "Rock" && computerChoice === "Scissors") || (humanChoice === "Paper" && computerChoice === "Rock") || (humanChoice === "Scissors" && computerChoice === "paper")){
+    let roundResult = "";
+    if (humanChoice === computerChoice) {
+        roundResult = "It's a tie!";
+    } else if (
+        (humanChoice === "Rock" && computerChoice === "Scissors") ||
+        (humanChoice === "Paper" && computerChoice === "Rock") ||
+        (humanChoice === "Scissors" && computerChoice === "Paper")
+    ) {
         humanScore++;
-        return `You win! ${humanChoice} beats ${computerChoice}`;
+        roundResult = `You win! ${humanChoice} beats ${computerChoice}`;
     } else {
         computerScore++;
-        return `You lose! ${computerChoice} beats ${humanChoice}`;
+        roundResult = `You lose! ${computerChoice} beats ${humanChoice}`;
     }
+    resultDiv.textContent = roundResult;
+    scoreDiv.textContent = `Score - You: ${humanScore}, Computer: ${computerScore}`;
 }
 
-// create logic for game to be completed after 5 rounds (new game round function should be within the newGame function
-function newGame(){
-// create variables for human and computer score and intialise to 0
-    let humanScore = 0;
-    let computerScore = 0;
-    for (let round = 1; round <= 5; round++) {
-        alert(`round ${round} of 5`);
-
-        const humanChoice = getHumanChoice();
-        const computerChoice = getComputerChoice();
-        const result = playRound(humanChoice, computerChoice);
-
-        alert(result + `\nScore - You: ${humanScore}, Computer: ${computerScore}`);
-    }
-
-    if (humanScore > computerScore) {
-        alert("🎉 You win the game!");
-    } else if (computerScore > humanScore) {
-        alert ("💻 computer wins the game!");
-    } else {
-        alert("🤝 The game is a tie");
-    }
-}
-
-newGame();
+btn1.addEventListener("click", getComputerChoice);
+btn2.addEventListener("click", getHumanChoice);
+btn3.addEventListener("click", playRound);
